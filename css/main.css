@@ -1,0 +1,49 @@
+body {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.board-container {
+  border-radius: 10px;
+  background-color: rgb(49, 47, 47);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
+
+table {
+  width: 100%;
+  margin: auto;
+}
+
+td {
+  padding: 8px;
+  font-size: 14px;
+}
+
+.levelGame {
+  font-weight: bold;
+}
+
+.board {
+  margin: auto;
+}
+
+.level-list {
+  display: flex;
+}
+
+div {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px;
+  transition: font-weight 1s ease-out;
+}
+
+div:hover {
+  background-color: rgba(23, 236, 112, 0.1);
+}

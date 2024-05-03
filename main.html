@@ -7,8 +7,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
     <script src="js/main.js"></script>
-    <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
+    <script src="js/utils.js"></script>
   </head>
-  <body></body>
+  <body onload="onInit()">
+    <h2 class="game-title">MINE SWEEPER</h2>
+    <table class="board-container">
+      <tr>
+        <td class="levelGame">Expert High Score:</td>
+      </tr>
+      <tr>
+        <td class="level-list">
+          <div onclick="setLevel(4,2)">Begginer</div>
+          <div onclick="setLevel(8,14)">Medium</div>
+          <div onclick="setLevel(12,32)">Expert</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="time">005</td>
+        <td class="logo">logo</td>
+        <td class="flags">🚩30</td>
+        <td class="life">💗</td>
+        <td class="hint">💡</td>
+        <td><tbody class="board"></tbody></td>
+      </tr>
+      <tr>
+        <td class="safe">Safe Button</td>
+        <td class="somtging">Manual Mode</td>
+        <td class="previous-move">Previous Move</td>
+        <td class="somtging">7-BOOM</td>
+      </tr>
+    </table>
+    <h2 class="copyright">© Michael Flasicher</h2>
+  </body>
 </html>
