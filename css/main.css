@@ -12,8 +12,8 @@ body {
   display: flex;
   flex-direction: column;
   max-width: 80%;
-  justify-content: center; /* יישור אופקי של התוכן במרכז המסך */
-  align-items: center; /* יישור אנכי של התוכן במרכז המסך */
+  justify-content: center;
+  align-items: center;
 }
 
 table {
@@ -73,7 +73,27 @@ div:hover,
   font-size: 20px;
   font-weight: bold;
 }
-.hintshown {
-  font-size: 40px;
-  font-weight: bold;
+
+.hide {
+  display: none;
+}
+.info {
+  background-color: gray;
+
+  height: 3em;
+  width: 200px;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: font-weight 1s ease-out;
+}
+
+.smile {
+  font-size: 50px;
 }

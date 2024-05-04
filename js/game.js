@@ -4,6 +4,7 @@ var gBoard = []
 var gLevel
 var gGame
 var gIntervalTime
+var gBestScore = { begginer: 0, medium: 0, expert: 0 }
 
 function startGame(i, j) {
   gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false }
@@ -25,11 +26,9 @@ function setEmptyCell(i, j) {
 }
 
 function setLevel(sizeBoard, countMines, level) {
-  clearInterval(gIntervalTime)
-  gBoard = []
-  gLevel = { SIZE: sizeBoard, MINES: countMines }
-  buildBoard()
-  renderStartBoard()
+  gLevel = { SIZE: sizeBoard, MINES: countMines, level: level, score: 100000 }
+  resetGame()
+
   var elBtnBegginer = document.querySelector('.begginer')
   var elBtnMedium = document.querySelector('.medium')
   var elBtnExpert = document.querySelector('.expert')
@@ -47,6 +46,16 @@ function setLevel(sizeBoard, countMines, level) {
     elBtnBegginer.classList.remove('level-selected')
     elBtnMedium.classList.remove('level-selected')
   }
+}
+function resetGame() {
+  clearInterval(gIntervalTime)
+  gBoard = []
+  buildBoard()
+  renderStartBoard()
+  gLevel.score = 100000
+  const elSmilly = document.querySelector('.smile')
+  elSmilly.textContent = '😀'
+  elSmilly.classList.remove('hide')
 }
 function buildBoard() {
   for (var i = 0; i < gLevel.SIZE; i++) {
@@ -103,22 +112,28 @@ function checkGameOver() {
       } else return
     }
   }
-  console.log('win')
-  gGame.isOn = false
   clearInterval(gIntervalTime)
+  gLevel.score = gLevel.score - 100 * calculateTimeElapsedInSeconds(gGame.timeStart)
+  setInfo(`You Won!! Congratulations 😎 you Scored ` + gLevel.score)
+  const elSmilly = document.querySelector('.smile')
+  elSmilly.textContent = '😎'
+  gGame.isOn = false
+  setScore()
 }
 function onClicked(i, j) {
   if (gGame.isHintOn) {
     useHint(i, j)
   }
   if (gGame.isOn) {
-    if (gBoard[i][j].isMine && gGame.lifeLeft === 0) {
+    if (gBoard[i][j].isMine && gGame.lifeLeft === 1) {
       gBoard[i][j].isShown = true
       gameOver()
     } else {
       if (gBoard[i][j].isMine) {
         gGame.lifeLeft--
         setLifeLeft()
+        setInfo(`you hit mine 💥 left with ${gGame.lifeLeft} lives 💗`)
+        gLevel.score -= 2000
         return
       }
       expandShown(gBoard, i, j)
@@ -219,7 +234,10 @@ function findEmptyCells(iPos, jPos) {
 }
 
 function gameOver() {
-  console.log('game lose')
+  gLevel.score = 0
+  setInfo(`Game Over 🤯 you Scored ` + gLevel.score)
+  const elSmilly = document.querySelector('.smile')
+  elSmilly.textContent = '🤯'
   exposeMines()
   gGame.isOn = false
   clearInterval(gIntervalTime)
@@ -246,11 +264,13 @@ function setHintsLeft() {
 
 function runHint() {
   if (!gGame.isOn && gGame.isHintOn) {
+    setInfo(`you turned off hint mode`)
     gGame.isHintOn = false
     gGame.countHint++
     gGame.isOn = true
   } else {
     if (gGame.countHint > 0 && gGame.isOn) {
+      setInfo(`you turned on hint mode`)
       gGame.isHintOn = true
       gGame.countHint--
       gGame.isOn = false
@@ -262,15 +282,16 @@ function runHint() {
 function useHint(iPos, jPos) {
   for (var i = iPos - 1; i <= iPos + 1; i++) {
     for (var j = jPos - 1; j <= jPos + 1; j++) {
-      if (i > 0 && j > 0 && i < gBoard.length && j < gBoard.length) renderCell(i, j)
+      if (i >= 0 && j >= 0 && i < gBoard.length && j < gBoard.length) renderCell(i, j)
     }
   }
 
   gGame.isHintOn = false
   setTimeout(() => {
     gGame.isOn = true
-
     renderBoard(gBoard)
+    setInfo(`you left with ${gGame.countHint} hints 💡`)
+    gLevel.score -= 1000
   }, 1000)
 }
 function renderCell(i, j) {
@@ -284,4 +305,37 @@ function renderCell(i, j) {
   const htmlCode = `<td class="${className}">${symbol}</td>`
   const elCell = document.querySelector(`.cell-${i}-${j}`)
   elCell.innerHTML = htmlCode
+}
+
+function setInfo(info) {
+  const elInfo = document.querySelector(`.info`)
+  elInfo.classList.remove('hide')
+  elInfo.textContent = info
+  setTimeout(() => {
+    elInfo.classList.add('hide')
+  }, 4000)
+}
+
+function setScore() {
+  if (gLevel.level === 'Begginer') {
+    if (gBestScore.begginer < gLevel.score) {
+      gBestScore.begginer = gLevel.score
+      const elScore = document.querySelector(`.begginer-score`)
+      elScore.textContent = 'Begginer: ' + gLevel.score
+    }
+  } else if (gLevel.level === 'Medium') {
+    if (gBestScore.medium < gLevel.score) {
+      gBestScore.medium = gLevel.score
+      const elScore = document.querySelector(`.medium-score`)
+      elScore.textContent = 'Medium: ' + gLevel.score
+    }
+  } else if (gLevel.level === 'Expert') {
+    console.log(gBestScore.begginer + '    -   ' + gLevel.score)
+    if (gBestScore.expert < gLevel.score) {
+      gBestScore.expert = gLevel.score
+      const elScore = document.querySelector(`.expert-score`)
+      elScore.textContent = 'Expert: ' + gLevel.score
+    }
+  }
+  gBestScore
 }

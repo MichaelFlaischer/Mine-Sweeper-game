@@ -14,3 +14,9 @@ function calculateTimeElapsed(startTime) {
 
   return minutes + ':' + (seconds < 10 ? '0' : '') + seconds
 }
+function calculateTimeElapsedInSeconds(startTime) {
+  var currentTime = new Date()
+  var timeDiff = Math.abs(currentTime - startTime)
+  var seconds = Math.floor(timeDiff / 1000)
+  return seconds
+}

@@ -13,6 +13,9 @@
   <body onload="onInit()">
     <h2 class="game-title">MINE SWEEPER</h2>
     <table class="board-container">
+      <td>
+        <div class="smile hide" onclick="resetGame()" title="restart the game">😀</div>
+      </td>
       <tr>
         <td class="level-list">
           <div class="begginer" onclick="setLevel(4,2,'Begginer')">Begginer</div>
@@ -22,11 +25,13 @@
       </tr>
     </table>
 
+    <aside class="info hide">sss</aside>
+
     <table class="board-container">
       <tr>
         <td class="time" title="time left"></td>
         <td class="flags" title="flags left to use"></td>
-        <td class="life" title="lifes left"></td>
+        <td class="life" title="lives left"></td>
         <td class="hint" onclick="runHint()" title="hints left"></td>
       </tr>
       <tr>
@@ -40,6 +45,21 @@
         <td class="somtging">Manual Mode</td>
         <td class="previous-move">Previous Move</td>
         <td class="somtging">7-BOOM</td>
+      </tr>
+    </table>
+    <br />
+    <table class="board-container scores">
+      <caption>
+        <h2>Best scores in the game</h2>
+      </caption>
+      <tr class="begginer-score">
+        <td>Begginer: 0</td>
+      </tr>
+      <tr class="medium-score">
+        <td>Medium: 0</td>
+      </tr>
+      <tr class="expert-score">
+        <td>Expert: 0</td>
       </tr>
     </table>
     <h2 class="copyright">© Michael Flasicher</h2>
