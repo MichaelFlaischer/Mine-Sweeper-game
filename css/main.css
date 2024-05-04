@@ -24,6 +24,7 @@ td {
   font-size: 14px;
 }
 .cell {
+  background-color: gray;
   border: 2px solid white;
   border-radius: 10px;
   width: 20px;
@@ -54,4 +55,17 @@ div {
 div:hover,
 .cell:hover {
   background-color: rgba(23, 236, 112, 0.1);
+}
+
+.shown {
+  background-color: lightgray;
+  color: black;
+  font-weight: bold;
+}
+
+.bomb {
+  background-color: red;
+}
+.hide {
+  display: none;
 }
