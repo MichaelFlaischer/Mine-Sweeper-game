@@ -14,24 +14,27 @@
     <h2 class="game-title">MINE SWEEPER</h2>
     <table class="board-container">
       <tr>
-        <td class="levelGame">Expert High Score:</td>
-      </tr>
-      <tr>
         <td class="level-list">
-          <div onclick="setLevel(4,2)">Begginer</div>
-          <div onclick="setLevel(8,14)">Medium</div>
-          <div onclick="setLevel(20,32)">Expert</div>
+          <div class="begginer" onclick="setLevel(4,2,'Begginer')">Begginer</div>
+          <div class="medium" onclick="setLevel(8,14,'Medium')">Medium</div>
+          <div class="expert" onclick="setLevel(12,32,'Expert')">Expert</div>
         </td>
       </tr>
+    </table>
 
+    <table class="board-container">
       <tr>
-        <td class="time">005</td>
-        <td class="logo">logo</td>
-        <td class="flags">🚩30</td>
-        <td class="life">💗</td>
-        <td class="hint">💡</td>
+        <td class="time" title="time left"></td>
+        <td class="flags" title="flags left to use"></td>
+        <td class="life" title="lifes left"></td>
+        <td class="hint" onclick="runHint()" title="hints left"></td>
+      </tr>
+      <tr>
         <td><tbody class="board"></tbody></td>
       </tr>
+    </table>
+
+    <table class="board-container">
       <tr>
         <td class="safe">Safe Button</td>
         <td class="somtging">Manual Mode</td>
