@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
     <script src="js/main.js"></script>
+    <script src="js/manualgame.js"></script>
     <script src="js/game.js"></script>
     <script src="js/utils.js"></script>
   </head>
@@ -21,11 +22,16 @@
           <div class="begginer" onclick="setLevel(4,2,'Begginer')">Begginer</div>
           <div class="medium" onclick="setLevel(8,14,'Medium')">Medium</div>
           <div class="expert" onclick="setLevel(12,32,'Expert')">Expert</div>
+          <div class="manual-mode" onclick="toggleManualMode()">⚙️Manual Mode⚙️</div>
         </td>
       </tr>
     </table>
 
-    <aside class="info hide">sss</aside>
+    <aside class="info hide"></aside>
+    <aside class="info manual hide">
+      <input type="text" id="boardSizeInput" placeholder="" />
+      <button onclick="setManuallyMode()">Set board size</button>
+    </aside>
 
     <table class="board-container">
       <tr>
@@ -33,6 +39,8 @@
         <td class="flags" title="flags left to use"></td>
         <td class="life" title="lives left"></td>
         <td class="hint" onclick="runHint()" title="hints left"></td>
+        <td class="safe-mode" onclick="showSafeCell()" title="safe mode left"></td>
+        <td class="previous-move" title="Get to previous move" onclick="undoStep()"></td>
       </tr>
       <tr>
         <td><tbody class="board"></tbody></td>
@@ -41,9 +49,6 @@
 
     <table class="board-container">
       <tr>
-        <td class="safe">Safe Button</td>
-        <td class="somtging">Manual Mode</td>
-        <td class="previous-move">Previous Move</td>
         <td class="somtging">7-BOOM</td>
       </tr>
     </table>

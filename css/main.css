@@ -93,6 +93,12 @@ div:hover,
   transform: translate(-50%, -50%);
   transition: font-weight 1s ease-out;
 }
+.manual {
+  background-color: rgb(12, 158, 243);
+}
+.green {
+  background-color: green;
+}
 
 .smile {
   font-size: 50px;

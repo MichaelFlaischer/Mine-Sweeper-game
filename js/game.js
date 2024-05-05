@@ -5,9 +5,11 @@ var gLevel
 var gGame
 var gIntervalTime
 var gBestScore = { begginer: 0, medium: 0, expert: 0 }
+var gPreSteps = { preBoard: [], preGame: [] }
 
 function startGame(i, j) {
-  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false }
+  gPreSteps = { preBoard: [], preGame: [] }
+  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3 }
   setEmptyCell(i, j)
   setMinesOnBoard(gBoard, i, j)
   setMinesNegsCount(gBoard)
@@ -19,6 +21,10 @@ function startGame(i, j) {
   setFlagsLeft()
   setLifeLeft()
   setHintsLeft()
+  setSafeLeft()
+  setPreviousMode()
+  gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
+  gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
 }
 
 function setEmptyCell(i, j) {
@@ -125,6 +131,8 @@ function onClicked(i, j) {
     useHint(i, j)
   }
   if (gGame.isOn) {
+    gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
+    gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
     if (gBoard[i][j].isMine && gGame.lifeLeft === 1) {
       gBoard[i][j].isShown = true
       gameOver()
@@ -261,6 +269,14 @@ function setHintsLeft() {
   const elHint = document.querySelector('.hint')
   elHint.innerHTML = `<td class="hint" onclick="runHint()" title="hints left">💡 ${gGame.countHint}</td>`
 }
+function setSafeLeft() {
+  const elHint = document.querySelector('.safe-mode')
+  elHint.innerHTML = `<td class="safe-mode" onclick="showSafeCell()" title="safe mode left">🛡️ ${gGame.countSafe}</td>`
+}
+function setPreviousMode() {
+  const elHint = document.querySelector('.previous-move')
+  elHint.innerHTML = `<td class="previous-move" title="Get to previous move" onclick="undoStep()">♻️</td>`
+}
 
 function runHint() {
   if (!gGame.isOn && gGame.isHintOn) {
@@ -338,4 +354,42 @@ function setScore() {
     }
   }
   gBestScore
+}
+function undoStep() {
+  if (gGame.isOn) {
+    if (gPreSteps.preGame.length === 0) setInfo('Sorry, you cant to undo mroe ♻️')
+    else {
+      var timeStart = gGame.timeStart
+      console.log(gPreSteps)
+      gGame = gPreSteps.preGame.pop()
+      gGame.timeStart = timeStart
+      gBoard = gPreSteps.preBoard.pop()
+      renderBoard(gBoard)
+      setFlagsLeft()
+      setLifeLeft()
+      setHintsLeft()
+      setSafeLeft()
+      setPreviousMode()
+    }
+  }
+}
+
+function showSafeCell() {
+  if (gGame.isOn && gGame.countSafe > 0) {
+    var cells = []
+    for (var i = 0; i < gBoard.length; i++) {
+      for (var j = 0; j < gBoard[0].length; j++) {
+        if (!gBoard[i][j].isMine && !gBoard[i][j].isShown) cells.push({ i: i, j: j })
+      }
+    }
+    var randCell = cells[getRandomIntInclusive(0, cells.length - 1)]
+    const elCell = document.querySelector(`.cell-${randCell.i}-${randCell.j}`)
+    elCell.classList.toggle('green')
+    setTimeout(() => {
+      elCell.classList.toggle('green')
+    }, 3000)
+    gGame.countSafe--
+    setInfo(`you left with ${gGame.countSafe} safes 🛡️`)
+    setSafeLeft()
+  }
 }
