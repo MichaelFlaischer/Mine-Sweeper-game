@@ -1,5 +1,5 @@
 'use strict'
 
 function onInit() {
-  // renderBoard()
+  setLevel(8, 14, 'Medium')
 }

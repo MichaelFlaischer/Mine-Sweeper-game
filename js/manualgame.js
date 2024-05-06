@@ -17,10 +17,11 @@ function setManuallyMode() {
   var elBtnBegginer = document.querySelector('.begginer')
   var elBtnMedium = document.querySelector('.medium')
   var elBtnExpert = document.querySelector('.expert')
-  var elBtnManual = document.querySelector('.manual-score')
+  var elBtnManual = document.querySelector('.manual-mode')
+
+  elBtnExpert.classList.remove('level-selected')
   elBtnBegginer.classList.remove('level-selected')
   elBtnMedium.classList.remove('level-selected')
-  elBtnExpert.classList.remove('level-selected')
   elBtnManual.classList.add('level-selected')
 }
 function renderManualBoard() {

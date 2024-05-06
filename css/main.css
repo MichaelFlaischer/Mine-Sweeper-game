@@ -19,6 +19,7 @@ body {
 table {
   width: 100%;
   margin: auto;
+  padding: 0px 0px 20px 0px;
 }
 
 td {

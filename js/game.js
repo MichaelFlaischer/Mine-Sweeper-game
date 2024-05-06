@@ -42,7 +42,7 @@ function setLevel(sizeBoard, countMines, level) {
   var elBtnBegginer = document.querySelector('.begginer')
   var elBtnMedium = document.querySelector('.medium')
   var elBtnExpert = document.querySelector('.expert')
-  var elBtnManual = document.querySelector('.manual-score')
+  var elBtnManual = document.querySelector('.manual-mode')
 
   if (level === 'Begginer') {
     elBtnBegginer.classList.add('level-selected')
@@ -64,6 +64,7 @@ function setLevel(sizeBoard, countMines, level) {
     elBtnBegginer.classList.remove('level-selected')
     elBtnMedium.classList.remove('level-selected')
     elBtnManual.classList.add('level-selected')
+    console.log('aaa')
   }
 }
 function resetGame() {
