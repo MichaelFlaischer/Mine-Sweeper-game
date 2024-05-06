@@ -7,9 +7,9 @@ function toggleManualMode() {
 
 function setManuallyMode() {
   var size = document.getElementById('boardSizeInput').value
-  console.log(size)
   toggleManualMode()
   gLevel = { SIZE: size, MINES: 0, level: 'manual', score: 100000 }
+  gMegaHint = { isOn: false, startPont: { i, j }, countUse: 1 }
   gBoard = []
   buildBoard()
   renderManualBoard()

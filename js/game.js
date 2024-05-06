@@ -6,8 +6,10 @@ var gGame
 var gIntervalTime
 var gBestScore = { begginer: 0, medium: 0, expert: 0 }
 var gPreSteps = { preBoard: [], preGame: [] }
+var gMegaHint = { isOn: false, startPont: { i, j }, countUse: 1 }
 
 function startGame(i, j) {
+  gMegaHint = { isOn: false, startPont: { i, j }, countUse: 1 }
   gPreSteps = { preBoard: [], preGame: [] }
   gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3, countExterminator: 1 }
   setEmptyCell(i, j)
