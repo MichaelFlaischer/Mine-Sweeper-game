@@ -9,7 +9,7 @@ function setManuallyMode() {
   var size = document.getElementById('boardSizeInput').value
   toggleManualMode()
   gLevel = { SIZE: size, MINES: 0, level: 'manual', score: 100000 }
-  gMegaHint = { isOn: false, startPont: { i, j }, countUse: 1 }
+  gMegaHint = { isOn: false, startPont: { i: null, j: null }, countMegaHint: 1 }
   gBoard = []
   buildBoard()
   renderManualBoard()
@@ -87,4 +87,5 @@ function runManualGame(i, j) {
   setSafeLeft()
   setPreviousMode()
   setMineExtermintorBtn()
+  setMegaHintBtn()
 }
