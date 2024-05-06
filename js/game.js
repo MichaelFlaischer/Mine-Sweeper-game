@@ -59,6 +59,11 @@ function setLevel(sizeBoard, countMines, level) {
     elBtnBegginer.classList.remove('level-selected')
     elBtnMedium.classList.remove('level-selected')
     elBtnManual.classList.remove('level-selected')
+  } else {
+    elBtnExpert.classList.remove('level-selected')
+    elBtnBegginer.classList.remove('level-selected')
+    elBtnMedium.classList.remove('level-selected')
+    elBtnManual.classList.add('level-selected')
   }
 }
 function resetGame() {
@@ -369,11 +374,11 @@ function setScore() {
       const elScore = document.querySelector(`.expert-score`)
       elScore.textContent = 'Expert: ' + gLevel.score
     }
-  } else if (gLevel.level === 'Expert') {
+  } else {
     if (gBestScore.expert < gLevel.score) {
       gBestScore.expert = gLevel.score
-      const elScore = document.querySelector(`.expert-score`)
-      elScore.textContent = 'Expert: ' + gLevel.score
+      const elScore = document.querySelector(`.manual-score`)
+      elScore.textContent = 'Manual mode: ' + gLevel.score
     }
   }
   gBestScore
