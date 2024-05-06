@@ -104,19 +104,13 @@ function setMinesNegsCount(board) {
 }
 
 function isNegsMines(iPos, jPos) {
-  for (var n = 0; n < 3; n++) {
-    for (var i = iPos - 1; i <= iPos + 1; i++) {
-      for (var j = jPos - 1; j <= jPos + 1; j++) {
-        if (i === -1 || i === gBoard.length || j === -1 || j === gBoard.length) {
-        } else if (gBoard[i][j].isMine && (i - iPos) * (j - jPos) === n) {
-          return n + 1
-        } else if (gBoard[i][j].minesAroundCount === 2 && n === 2) {
-          return n + 1
-        }
-      }
+  var countMines = 0
+  for (var i = Math.max(iPos - 1, 0); i <= Math.min(iPos + 1, gBoard.length - 1); i++) {
+    for (var j = Math.max(jPos - 1, 0); j <= Math.min(jPos + 1, gBoard.length - 1); j++) {
+      if (gBoard[i][j].isMine) countMines++
     }
   }
-  return false
+  return countMines
 }
 
 function checkGameOver() {
@@ -226,9 +220,9 @@ function renderBoard(board) {
       } else if (board[i][j].isShown && board[i][j].isMine) {
         strHTML += `<td class="${className} shown bomb">${symbol}</td>`
       } else if (board[i][j].isMarked) {
-        strHTML += `<td class="${className}" oncontextmenu="event.preventDefault(); onCellMarked(${i},${j})"  onmouseover="lightUpArea(${i},${j})" >❌</td>`
+        strHTML += `<td class="${className}" oncontextmenu="event.preventDefault(); onCellMarked(${i},${j})"  >❌</td>`
       } else {
-        strHTML += `<td class="${className}" onclick="onClicked(${i},${j})" onmouseover="lightUpArea(${i},${j})" oncontextmenu="event.preventDefault(); onCellMarked(${i},${j})"></td>`
+        strHTML += `<td class="${className}" onclick="onClicked(${i},${j})" oncontextmenu="event.preventDefault(); onCellMarked(${i},${j})"></td>`
       }
     }
     strHTML += '</tr>'
@@ -353,7 +347,7 @@ function setInfo(info) {
   elInfo.textContent = info
   setTimeout(() => {
     elInfo.classList.add('hide')
-  }, 4000)
+  }, 2000)
 }
 
 function setScore() {
@@ -389,7 +383,6 @@ function undoStep() {
     if (gPreSteps.preGame.length === 0) setInfo('Sorry, you cant to undo mroe ♻️')
     else {
       var timeStart = gGame.timeStart
-      console.log(gPreSteps)
       gGame = gPreSteps.preGame.pop()
       gGame.timeStart = timeStart
       gBoard = gPreSteps.preBoard.pop()
@@ -426,83 +419,63 @@ function showSafeCell() {
 }
 
 function mineExterminator() {
-  if (gGame.countExterminator > 0) {
-    var mines = []
-    for (var i = 0; i < gBoard.length; i++) {
-      for (var j = 0; j < gBoard[0].length; j++) {
-        if (gBoard[i][j].isMine && !gBoard[i][j].isMarked) mines.push({ i: i, j: j })
+  if (gGame.isOn) {
+    if (gGame.countExterminator > 0) {
+      var mines = []
+      for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[0].length; j++) {
+          if (gBoard[i][j].isMine && !gBoard[i][j].isMarked) mines.push({ i: i, j: j })
+        }
       }
-    }
-    for (var n = 0; n < 3 && gLevel.MINES > 0; n++) {
-      var randCell = mines[getRandomIntInclusive(0, mines.length - 1)]
-      gBoard[randCell.i][randCell.j] = { minesAroundCount: 0, isShown: false, isMine: false, isMarked: false }
-      gLevel.MINES--
-    }
-
-    setMinesNegsCount(gBoard)
-    renderBoard(gBoard)
-    setFlagsLeft()
-    gGame.countExterminator--
-    setInfo(`you left with ${gGame.countExterminator} mine exterminators 💣`)
-    setMineExtermintorBtn()
-  }
-}
-
-function lightUpArea(iPos, jPos) {
-  if (gMegaHint.startPoint.i !== null && gMegaHint.isOn) {
-    if (gMegaHint.startPoint.i <= iPos && gMegaHint.startPoint.j <= jPos) {
-      var startPos = { i: gMegaHint.startPoint.i, j: gMegaHint.startPoint.j }
-      var endPos = { i: iPos, j: jPos }
-    } else {
-      var startPos = { i: iPos, j: jPos }
-      var endPos = { i: gMegaHint.startPoint.i, j: gMegaHint.startPoint.j }
-    }
-    for (var i = startPos.i; i <= endPos.i; i++) {
-      for (var j = startPos.j; j <= endPos.j; j++) {
-        const elCell = document.querySelector(`.cell-${startPos.i}-${startPos.j}`)
-        elCell.classList.add('green')
-        console.log(elCell)
+      for (var n = 0; n < 3 && gLevel.MINES > 0; n++) {
+        var randCell = mines[getRandomIntInclusive(0, mines.length - 1)]
+        gBoard[randCell.i][randCell.j] = { minesAroundCount: 0, isShown: false, isMine: false, isMarked: false }
+        gLevel.MINES--
       }
+
+      setMinesNegsCount(gBoard)
+      renderBoard(gBoard)
+      setFlagsLeft()
+      gGame.countExterminator--
+      setInfo(`you left with ${gGame.countExterminator} mine exterminators 💣`)
+      setMineExtermintorBtn()
     }
   }
 }
-
 function useMegaHint(startPos = null, endPos = null) {
-  if (!gMegaHint.isOn && gMegaHint.countMegaHint > 0) {
-    gMegaHint = { isOn: true, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint - 1 }
-    setMegaHintBtn()
-    renderBoard(gBoard)
-    setInfo(`you turned on mega hint mode🔎`)
-  } else if (startPos === null && gMegaHint.isOn) {
-    gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint + 1 }
-    setMegaHintBtn()
-    renderBoard(gBoard)
-    setInfo(`you turned off mega hint mode🔎`)
-  } else if (endPos === null && gMegaHint.isOn) {
-    const elCell = document.querySelector(`.cell-${startPos.i}-${startPos.j}`)
-    elCell.classList.toggle('green')
-    gMegaHint.startPoint = startPos
-  } else if (gMegaHint.isOn) {
-    console.log(endPos)
-
-    if (startPos.i === endPos.i && startPos.j === endPos.j) {
-      gMegaHint = { isOn: true, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint }
+  if (gGame.isOn) {
+    if (!gMegaHint.isOn && gMegaHint.countMegaHint > 0 && startPos === null) {
+      gMegaHint = { isOn: true, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint - 1 }
+      setMegaHintBtn()
       renderBoard(gBoard)
-    } else if (startPos.i >= endPos.i && startPos.j >= endPos.j) {
-      useMegaHint({ i: null, j: null }, gMegaHint.startPoint)
-    }
-
-    gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint }
-    setMegaHintBtn()
-    renderBoard(gBoard)
-    for (var i = startPos.i; i <= endPos.i; i++) {
-      for (var j = startPos.j; j <= endPos.j; j++) {
-        renderCell(i, j)
+      setInfo(`you turned on mega hint mode🔎`)
+    } else if (startPos === null && gMegaHint.isOn) {
+      gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint + 1 }
+      setMegaHintBtn()
+      renderBoard(gBoard)
+      setInfo(`you turned off mega hint mode🔎`)
+    } else if (endPos === null && gMegaHint.isOn) {
+      const elCell = document.querySelector(`.cell-${startPos.i}-${startPos.j}`)
+      elCell.classList.toggle('green')
+      gMegaHint.startPoint = startPos
+    } else if (gMegaHint.isOn) {
+      if (startPos.i === endPos.i && startPos.j === endPos.j) {
+        gMegaHint = { isOn: true, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint }
+        renderBoard(gBoard)
       }
-    }
-    setTimeout(() => {
+
+      gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: gMegaHint.countMegaHint }
+      setMegaHintBtn()
       renderBoard(gBoard)
-      setInfo(`you left with ${gGame.countExterminator} mega hints 🔎`)
-    }, 1000)
+      for (var i = Math.min(startPos.i, endPos.i); i <= Math.max(startPos.i, endPos.i); i++) {
+        for (var j = Math.min(startPos.j, endPos.j); j <= Math.max(startPos.j, endPos.j); j++) {
+          renderCell(i, j)
+        }
+      }
+      setTimeout(() => {
+        renderBoard(gBoard)
+        setInfo(`you left with ${gMegaHint.countMegaHint} mega hints 🔎`)
+      }, 1000)
+    }
   }
 }
