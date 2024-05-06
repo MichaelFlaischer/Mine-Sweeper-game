@@ -40,6 +40,7 @@
         <td class="life" title="lives left"></td>
         <td class="hint" onclick="runHint()" title="hints left"></td>
         <td class="safe-mode" onclick="showSafeCell()" title="safe mode left"></td>
+        <td class="mine-exterminator" title="Eliminate 3 of existing mines randomly" onclick="mineExterminator()"></td>
         <td class="previous-move" title="Get to previous move" onclick="undoStep()"></td>
       </tr>
       <tr>
@@ -49,7 +50,7 @@
 
     <table class="board-container">
       <tr>
-        <td class="somtging">7-BOOM</td>
+        <td><div class="somtging" onclick="mineExterminator()">7-BOOM</div></td>
       </tr>
     </table>
     <br />
@@ -64,6 +65,9 @@
         <td>Medium: 0</td>
       </tr>
       <tr class="expert-score">
+        <td>Expert: 0</td>
+      </tr>
+      <tr class="manual-score">
         <td>Expert: 0</td>
       </tr>
     </table>

@@ -9,7 +9,7 @@ var gPreSteps = { preBoard: [], preGame: [] }
 
 function startGame(i, j) {
   gPreSteps = { preBoard: [], preGame: [] }
-  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3 }
+  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3, countExterminator: 1 }
   setEmptyCell(i, j)
   setMinesOnBoard(gBoard, i, j)
   setMinesNegsCount(gBoard)
@@ -23,6 +23,7 @@ function startGame(i, j) {
   setHintsLeft()
   setSafeLeft()
   setPreviousMode()
+  setMineExtermintorBtn()
   gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
   gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
 }
@@ -38,19 +39,23 @@ function setLevel(sizeBoard, countMines, level) {
   var elBtnBegginer = document.querySelector('.begginer')
   var elBtnMedium = document.querySelector('.medium')
   var elBtnExpert = document.querySelector('.expert')
+  var elBtnManual = document.querySelector('.manual-score')
 
   if (level === 'Begginer') {
     elBtnBegginer.classList.add('level-selected')
     elBtnMedium.classList.remove('level-selected')
     elBtnExpert.classList.remove('level-selected')
+    elBtnManual.classList.remove('level-selected')
   } else if (level === 'Medium') {
     elBtnMedium.classList.add('level-selected')
     elBtnBegginer.classList.remove('level-selected')
     elBtnExpert.classList.remove('level-selected')
+    elBtnManual.classList.remove('level-selected')
   } else if (level === 'Expert') {
     elBtnExpert.classList.add('level-selected')
     elBtnBegginer.classList.remove('level-selected')
     elBtnMedium.classList.remove('level-selected')
+    elBtnManual.classList.remove('level-selected')
   }
 }
 function resetGame() {
@@ -96,15 +101,15 @@ function setMinesNegsCount(board) {
 }
 
 function isNegsMines(iPos, jPos) {
-  for (var i = iPos - 1; i <= iPos + 1; i++) {
-    for (var j = jPos - 1; j <= jPos + 1; j++) {
-      if (i === -1 || i === gBoard.length || j === -1 || j === gBoard.length) {
-      } else if (gBoard[i][j].isMine && (i - iPos) * (j - jPos) === 0) {
-        return 1
-      } else if (gBoard[i][j].isMine && (i - iPos) * (j - jPos) === 1) {
-        return 2
-      } else if (gBoard[i][j].minesAroundCount === 2) {
-        return 3
+  for (var n = 0; n < 3; n++) {
+    for (var i = iPos - 1; i <= iPos + 1; i++) {
+      for (var j = jPos - 1; j <= jPos + 1; j++) {
+        if (i === -1 || i === gBoard.length || j === -1 || j === gBoard.length) {
+        } else if (gBoard[i][j].isMine && (i - iPos) * (j - jPos) === n) {
+          return n + 1
+        } else if (gBoard[i][j].minesAroundCount === 2 && n === 2) {
+          return n + 1
+        }
       }
     }
   }
@@ -277,6 +282,10 @@ function setPreviousMode() {
   const elHint = document.querySelector('.previous-move')
   elHint.innerHTML = `<td class="previous-move" title="Get to previous move" onclick="undoStep()">♻️</td>`
 }
+function setMineExtermintorBtn() {
+  const elExterminator = document.querySelector('.mine-exterminator')
+  elExterminator.innerHTML = `<td class="mine-exterminator" title="Eliminate 3 of existing mines randomly" onclick="mineExterminator()">💣 ${gGame.countExterminator}</td>`
+}
 
 function runHint() {
   if (!gGame.isOn && gGame.isHintOn) {
@@ -346,7 +355,12 @@ function setScore() {
       elScore.textContent = 'Medium: ' + gLevel.score
     }
   } else if (gLevel.level === 'Expert') {
-    console.log(gBestScore.begginer + '    -   ' + gLevel.score)
+    if (gBestScore.expert < gLevel.score) {
+      gBestScore.expert = gLevel.score
+      const elScore = document.querySelector(`.expert-score`)
+      elScore.textContent = 'Expert: ' + gLevel.score
+    }
+  } else if (gLevel.level === 'Expert') {
     if (gBestScore.expert < gLevel.score) {
       gBestScore.expert = gLevel.score
       const elScore = document.querySelector(`.expert-score`)
@@ -370,6 +384,7 @@ function undoStep() {
       setHintsLeft()
       setSafeLeft()
       setPreviousMode()
+      setMineExtermintorBtn()
     }
   }
 }
@@ -391,5 +406,28 @@ function showSafeCell() {
     gGame.countSafe--
     setInfo(`you left with ${gGame.countSafe} safes 🛡️`)
     setSafeLeft()
+  }
+}
+
+function mineExterminator() {
+  if (gGame.countExterminator > 0) {
+    var mines = []
+    for (var i = 0; i < gBoard.length; i++) {
+      for (var j = 0; j < gBoard[0].length; j++) {
+        if (gBoard[i][j].isMine && !gBoard[i][j].isMarked) mines.push({ i: i, j: j })
+      }
+    }
+    for (var n = 0; n < 3 && gLevel.MINES > 0; n++) {
+      var randCell = mines[getRandomIntInclusive(0, mines.length - 1)]
+      gBoard[randCell.i][randCell.j] = { minesAroundCount: 0, isShown: false, isMine: false, isMarked: false }
+      gLevel.MINES--
+    }
+
+    setMinesNegsCount(gBoard)
+    renderBoard(gBoard)
+    setFlagsLeft()
+    gGame.countExterminator--
+    setInfo(`you left with ${gGame.countExterminator} mine exterminators 💣`)
+    setMineExtermintorBtn()
   }
 }

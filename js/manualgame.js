@@ -13,6 +13,15 @@ function setManuallyMode() {
   gBoard = []
   buildBoard()
   renderManualBoard()
+
+  var elBtnBegginer = document.querySelector('.begginer')
+  var elBtnMedium = document.querySelector('.medium')
+  var elBtnExpert = document.querySelector('.expert')
+  var elBtnManual = document.querySelector('.manual-score')
+  elBtnBegginer.classList.remove('level-selected')
+  elBtnMedium.classList.remove('level-selected')
+  elBtnExpert.classList.remove('level-selected')
+  elBtnManual.classList.add('level-selected')
 }
 function renderManualBoard() {
   var strHTML = ''
@@ -64,7 +73,7 @@ function renderStartManualBoard(board) {
 }
 function runManualGame(i, j) {
   gPreSteps = { preBoard: [], preGame: [] }
-  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3 }
+  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3, countExterminator: 1 }
   setEmptyCell(i, j)
   setMinesNegsCount(gBoard)
   setEmptyCell(i, j)
@@ -77,4 +86,5 @@ function runManualGame(i, j) {
   setHintsLeft()
   setSafeLeft()
   setPreviousMode()
+  setMineExtermintorBtn()
 }
