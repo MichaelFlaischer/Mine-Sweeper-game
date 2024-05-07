@@ -1,10 +1,12 @@
 'use strict'
 
+// Toggles the visibility of the manual mode window
 function toggleManualMode() {
   var elManualMode = document.querySelector('.manual')
   elManualMode.classList.toggle('hide')
 }
 
+// Sets the game mode to manual based on user input
 function setManuallyMode() {
   var size = document.getElementById('boardSizeInput').value
   toggleManualMode()
@@ -13,17 +15,10 @@ function setManuallyMode() {
   gBoard = []
   buildBoard()
   renderManualBoard()
-
-  var elBtnBegginer = document.querySelector('.begginer')
-  var elBtnMedium = document.querySelector('.medium')
-  var elBtnExpert = document.querySelector('.expert')
-  var elBtnManual = document.querySelector('.manual-mode')
-
-  elBtnExpert.classList.remove('level-selected')
-  elBtnBegginer.classList.remove('level-selected')
-  elBtnMedium.classList.remove('level-selected')
-  elBtnManual.classList.add('level-selected')
+  renderLevelButtens(gLevel.level)
 }
+
+// Renders the manual mode board
 function renderManualBoard() {
   var strHTML = ''
   for (var i = 0; i < gLevel.SIZE; i++) {
@@ -38,6 +33,8 @@ function renderManualBoard() {
   const elBoard = document.querySelector('.board')
   elBoard.innerHTML = strHTML
 }
+
+// Toggles a mine at the specified position
 function setMine(iPos, jPos) {
   if (gBoard[iPos][jPos].isMine) {
     gBoard[iPos][jPos].isMine = false
@@ -51,6 +48,8 @@ function setMine(iPos, jPos) {
     renderCell(iPos, jPos)
   }
 }
+
+// Starts a manual game
 function startManualGame() {
   clearInterval(gIntervalTime)
   renderStartManualBoard()
@@ -59,6 +58,8 @@ function startManualGame() {
   elSmilly.textContent = '😀'
   elSmilly.classList.remove('hide')
 }
+
+// Renders the starting board for the manual mode
 function renderStartManualBoard(board) {
   var strHTML = ''
   for (var i = 0; i < gLevel.SIZE; i++) {
@@ -72,6 +73,8 @@ function renderStartManualBoard(board) {
   const elBoard = document.querySelector('.board')
   elBoard.innerHTML = strHTML
 }
+
+// Runs the manual game based on user input
 function runManualGame(i, j) {
   gPreSteps = { preBoard: [], preGame: [] }
   gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3, countExterminator: 1 }

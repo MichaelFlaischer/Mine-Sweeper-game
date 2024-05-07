@@ -1,124 +1,85 @@
 'use strict'
 
+// Defines the game board
 var gBoard = []
+
+// Represents the current game level and state
 var gLevel
 var gGame
-var gIntervalTime
-var gBestScore = { begginer: 0, medium: 0, expert: 0 }
-var gPreSteps = { preBoard: [], preGame: [] }
-var gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countUse: 1 }
 
+// Stores the interval for the timer
+var gIntervalTime
+
+// Stores the best scores for each level
+var gBestScore = { begginer: 0, medium: 0, expert: 0 }
+
+// Stores previous game states for undo functionality
+var gPreSteps = { preBoard: [], preGame: [] }
+
+// Stores information about the Mega Hint feature
+var gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: 1 }
+
+// Initializes the game with default settings
+function onInit() {
+  setLevel(8, 14, 'Medium')
+}
+
+// Starts a new game at the specified position
 function startGame(i, j) {
+  // Resets Mega Hint and previous steps
   gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: 1 }
   gPreSteps = { preBoard: [], preGame: [] }
+
+  // Initializes game state
   gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3, countExterminator: 1 }
+
+  // Sets up the board
   setEmptyCell(i, j)
   setMinesOnBoard(gBoard, i, j)
   setMinesNegsCount(gBoard)
   setEmptyCell(i, j)
   expandShown(gBoard, i, j)
   renderBoard(gBoard)
+
+  // Starts the timer
   gIntervalTime = setInterval(setTimeLeft, 1000)
-  setTimeLeft()
-  setFlagsLeft()
-  setLifeLeft()
-  setHintsLeft()
-  setSafeLeft()
-  setPreviousMode()
-  setMineExtermintorBtn()
-  setMegaHintBtn()
+  renderGameButtons()
+
+  // Saves current state for possible undo action
   gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
   gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
 }
 
+// Sets an empty cell at the specified position
 function setEmptyCell(i, j) {
   gBoard[i][j].minesAroundCount = 0
 }
 
+// Sets the game level with the specified board size, mine count, and difficulty level
 function setLevel(sizeBoard, countMines, level) {
   gLevel = { SIZE: sizeBoard, MINES: countMines, level: level, score: 100000 }
   resetGame()
-
-  var elBtnBegginer = document.querySelector('.begginer')
-  var elBtnMedium = document.querySelector('.medium')
-  var elBtnExpert = document.querySelector('.expert')
-  var elBtnManual = document.querySelector('.manual-mode')
-
-  if (level === 'Begginer') {
-    elBtnBegginer.classList.add('level-selected')
-    elBtnMedium.classList.remove('level-selected')
-    elBtnExpert.classList.remove('level-selected')
-    elBtnManual.classList.remove('level-selected')
-  } else if (level === 'Medium') {
-    elBtnMedium.classList.add('level-selected')
-    elBtnBegginer.classList.remove('level-selected')
-    elBtnExpert.classList.remove('level-selected')
-    elBtnManual.classList.remove('level-selected')
-  } else if (level === 'Expert') {
-    elBtnExpert.classList.add('level-selected')
-    elBtnBegginer.classList.remove('level-selected')
-    elBtnMedium.classList.remove('level-selected')
-    elBtnManual.classList.remove('level-selected')
-  } else {
-    elBtnExpert.classList.remove('level-selected')
-    elBtnBegginer.classList.remove('level-selected')
-    elBtnMedium.classList.remove('level-selected')
-    elBtnManual.classList.add('level-selected')
-    console.log('aaa')
-  }
+  renderLevelButtens(gLevel.level)
 }
+
+// Resets the game state
 function resetGame() {
+  // Stops the timer
   clearInterval(gIntervalTime)
+
+  // Resets the board
   gBoard = []
   buildBoard()
   renderStartBoard()
+
+  // Resets the score and displays the smiley face
   gLevel.score = 100000
   const elSmilly = document.querySelector('.smile')
   elSmilly.textContent = '😀'
   elSmilly.classList.remove('hide')
 }
-function buildBoard() {
-  for (var i = 0; i < gLevel.SIZE; i++) {
-    gBoard.push([])
-    for (var j = 0; j < gLevel.SIZE; j++) {
-      gBoard[i].push({ minesAroundCount: 0, isShown: false, isMine: false, isMarked: false })
-    }
-  }
-}
 
-function renderStartBoard(board) {
-  var strHTML = ''
-  for (var i = 0; i < gLevel.SIZE; i++) {
-    strHTML += '<tr>'
-    for (var j = 0; j < gLevel.SIZE; j++) {
-      const className = `cell cell-${i}-${j}`
-      strHTML += `<td class="${className}" onclick="startGame(${i},${j})"></td>`
-    }
-    strHTML += '</tr>'
-  }
-  const elBoard = document.querySelector('.board')
-  elBoard.innerHTML = strHTML
-}
-
-function setMinesNegsCount(board) {
-  var cells = []
-  for (var i = 0; i < gBoard.length; i++) {
-    for (var j = 0; j < gBoard[0].length; j++) {
-      if (!board[i][j].isMine) board[i][j].minesAroundCount = isNegsMines(i, j)
-    }
-  }
-}
-
-function isNegsMines(iPos, jPos) {
-  var countMines = 0
-  for (var i = Math.max(iPos - 1, 0); i <= Math.min(iPos + 1, gBoard.length - 1); i++) {
-    for (var j = Math.max(jPos - 1, 0); j <= Math.min(jPos + 1, gBoard.length - 1); j++) {
-      if (gBoard[i][j].isMine) countMines++
-    }
-  }
-  return countMines
-}
-
+// Checks if the game is over
 function checkGameOver() {
   for (var i = 0; i < gBoard.length; i++) {
     for (var j = 0; j < gBoard[0].length; j++) {
@@ -126,6 +87,8 @@ function checkGameOver() {
       } else return
     }
   }
+
+  // Stops the timer and calculates the final score
   clearInterval(gIntervalTime)
   gLevel.score = gLevel.score - 100 * calculateTimeElapsedInSeconds(gGame.timeStart)
   setInfo(`You Won!! Congratulations 😎 you Scored ` + gLevel.score)
@@ -134,14 +97,22 @@ function checkGameOver() {
   gGame.isOn = false
   setScore()
 }
+
+// Handles the click event on a cell
 function onClicked(i, j) {
+  // Checks if the hint mode is activated
   if (gGame.isHintOn) {
     useHint(i, j)
     return
   }
+
+  // Executes game logic if the game is active
   if (gGame.isOn) {
+    // Saves the current state for possible undo action
     gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
     gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
+
+    // Activates Mega Hint mode if enabled
     if (gMegaHint.isOn) {
       if (gMegaHint.startPoint.i === null) {
         useMegaHint({ i: i, j: j })
@@ -149,26 +120,37 @@ function onClicked(i, j) {
       return
     }
 
-    if (gBoard[i][j].isMine && gGame.lifeLeft === 1) {
-      gBoard[i][j].isShown = true
-      gameOver()
-    } else {
-      if (gBoard[i][j].isMine) {
-        gGame.lifeLeft--
-        setLifeLeft()
-        setInfo(`you hit mine 💥 left with ${gGame.lifeLeft} lives 💗`)
-        gLevel.score -= 2000
-        return
+    // Handles mine click
+    if (gBoard[i][j].isMine) {
+      gGame.lifeLeft--
+      setLifeLeft()
+      renderCell(i, j)
+      setTimeout(() => {
+        if (gGame.isOn) renderCell(i, j, true)
+      }, 1500)
+      setInfo(`you hit mine 💥 left with ${gGame.lifeLeft} lives 💗`)
+      gLevel.score -= 2000
+      if (gGame.lifeLeft === 0) {
+        gameOver()
+        renderBoard(gBoard)
       }
-      expandShown(gBoard, i, j)
-      checkGameOver()
+      return
     }
-    renderBoard(gBoard)
+
+    // Expands the shown area on the board
+    expandShown(gBoard, i, j)
+
+    // Checks if the game is over
+    checkGameOver()
   }
+  renderBoard(gBoard)
 }
 
+// Handles the cell marking event
 function onCellMarked(i, j) {
+  // Executes logic if the game is active
   if (gGame.isOn) {
+    // Updates the marked count
     if (gBoard[i][j].isMarked) {
       gGame.markedCount--
     }
@@ -177,29 +159,15 @@ function onCellMarked(i, j) {
       gGame.markedCount++
     }
     gBoard[i][j].isMarked = !gBoard[i][j].isMarked
+
+    // Checks if the game is over
     checkGameOver()
     renderBoard(gBoard)
     setFlagsLeft()
   }
 }
 
-function expandShown(board, iPos, jPos) {
-  if (board[iPos][jPos].isShown || board[iPos][jPos].isMarked) return
-  board[iPos][jPos].isShown = true
-  if (board[iPos][jPos].minesAroundCount > 0) return
-
-  for (var i = iPos - 1; i <= iPos + 1; i++) {
-    for (var j = jPos - 1; j <= jPos + 1; j++) {
-      if (i >= 0 && i < board.length && j >= 0 && j < board.length && (i - iPos) * (j - jPos) === 0 && (i !== iPos || j !== jPos)) {
-        if (board[i][j].minesAroundCount == false) expandShown(board, i, j)
-        else if (board[i][j].minesAroundCount > 0) {
-          board[i][j].isShown = true
-        }
-      }
-    }
-  }
-}
-
+// Exposes all mines on the board
 function exposeMines() {
   for (var i = 0; i < gBoard.length; i++) {
     for (var j = 0; j < gBoard[0].length; j++) {
@@ -208,100 +176,21 @@ function exposeMines() {
   }
 }
 
-function renderBoard(board) {
-  var strHTML = ''
-  for (var i = 0; i < gLevel.SIZE; i++) {
-    strHTML += '<tr>'
-    for (var j = 0; j < gLevel.SIZE; j++) {
-      var symbol = ''
-      if (gBoard[i][j].isMine) {
-        symbol = '💣'
-      } else if (gBoard[i][j].minesAroundCount > 0) {
-        symbol = gBoard[i][j].minesAroundCount.toString()
-      }
-
-      const className = `cell cell-${i}-${j}`
-      if (board[i][j].isShown && !board[i][j].isMine) {
-        strHTML += `<td class="${className} shown">${symbol}</td>`
-      } else if (board[i][j].isShown && board[i][j].isMine) {
-        strHTML += `<td class="${className} shown bomb">${symbol}</td>`
-      } else if (board[i][j].isMarked) {
-        strHTML += `<td class="${className}" oncontextmenu="event.preventDefault(); onCellMarked(${i},${j})"  >❌</td>`
-      } else {
-        strHTML += `<td class="${className}" onclick="onClicked(${i},${j})" oncontextmenu="event.preventDefault(); onCellMarked(${i},${j})"></td>`
-      }
-    }
-    strHTML += '</tr>'
-  }
-  const elBoard = document.querySelector('.board')
-  elBoard.innerHTML = strHTML
-}
-function setMinesOnBoard(board, iPos, jPos) {
-  var cells = findEmptyCells(iPos, jPos)
-  for (var i = 0; i < gLevel.MINES; i++) {
-    const rndCell = getRandomIntInclusive(0, cells.length - 1)
-    const minePos = cells[rndCell]
-    board[minePos.i][minePos.j].isMine = true
-    board[minePos.i][minePos.j].minesAroundCount = -1
-    cells.splice(rndCell, 1)
-  }
-}
-
-function findEmptyCells(iPos, jPos) {
-  var cells = []
-  for (var i = 0; i < gBoard.length; i++) {
-    for (var j = 0; j < gBoard.length; j++) {
-      if (i > iPos + 1 || i < iPos - 1 || j > jPos + 1 || j < jPos - 1) cells.push({ i: i, j: j })
-    }
-  }
-  return cells
-}
-
+// Handles game over event
 function gameOver() {
+  // Resets the score and displays a message
   gLevel.score = 0
   setInfo(`Game Over 🤯 you Scored ` + gLevel.score)
   const elSmilly = document.querySelector('.smile')
   elSmilly.textContent = '🤯'
+
+  // Exposes all mines and stops the game
   exposeMines()
   gGame.isOn = false
   clearInterval(gIntervalTime)
 }
 
-function setTimeLeft() {
-  if (gGame.isOn) {
-    const elTime = document.querySelector('.time')
-    elTime.textContent = '🕰️' + calculateTimeElapsed(gGame.timeStart)
-  }
-}
-function setFlagsLeft() {
-  const elFlags = document.querySelector('.flags')
-  elFlags.textContent = '🚩' + (gLevel.MINES - gGame.markedCount)
-}
-function setLifeLeft() {
-  const elLife = document.querySelector('.life')
-  elLife.textContent = '💗' + gGame.lifeLeft
-}
-function setHintsLeft() {
-  const elHint = document.querySelector('.hint')
-  elHint.innerHTML = `<td class="hint" onclick="runHint()" title="hints left">💡 ${gGame.countHint}</td>`
-}
-function setSafeLeft() {
-  const elHint = document.querySelector('.safe-mode')
-  elHint.innerHTML = `<td class="safe-mode" onclick="showSafeCell()" title="safe mode left">🛡️ ${gGame.countSafe}</td>`
-}
-function setPreviousMode() {
-  const elHint = document.querySelector('.previous-move')
-  elHint.innerHTML = `<td class="previous-move" title="Get to previous move" onclick="undoStep()">♻️</td>`
-}
-function setMineExtermintorBtn() {
-  const elExterminator = document.querySelector('.mine-exterminator')
-  elExterminator.innerHTML = `<td class="mine-exterminator" title="Eliminate 3 of existing mines randomly" onclick="mineExterminator()">💣 ${gGame.countExterminator}</td>`
-}
-function setMegaHintBtn() {
-  const elExterminator = document.querySelector('.mega-hint')
-  elExterminator.innerHTML = `<td class="mega-hint" title="reaveal an area of the board for 2 seconds" onclick="useMegaHint()">🔎 ${gMegaHint.countMegaHint}</td>`
-}
-
+// Toggles the hint mode on or off
 function runHint() {
   if (!gGame.isOn && gGame.isHintOn) {
     setInfo(`you turned off hint mode`)
@@ -319,13 +208,16 @@ function runHint() {
   setHintsLeft()
 }
 
+// Uses a hint to reveal neighboring cells
 function useHint(iPos, jPos) {
+  // Reveals neighboring cells
   for (var i = iPos - 1; i <= iPos + 1; i++) {
     for (var j = jPos - 1; j <= jPos + 1; j++) {
       if (i >= 0 && j >= 0 && i < gBoard.length && j < gBoard.length) renderCell(i, j)
     }
   }
 
+  // Updates game state and score
   gGame.isHintOn = false
   setTimeout(() => {
     gGame.isOn = true
@@ -334,56 +226,8 @@ function useHint(iPos, jPos) {
     gLevel.score -= 1000
   }, 1000)
 }
-function renderCell(i, j) {
-  var symbol = ''
-  if (gBoard[i][j].isMine) {
-    symbol = '💣'
-  } else if (gBoard[i][j].minesAroundCount > 0) {
-    symbol = gBoard[i][j].minesAroundCount.toString()
-  }
-  const className = `cell cell-${i}-${j}`
-  const htmlCode = `<td class="${className}">${symbol}</td>`
-  const elCell = document.querySelector(`.cell-${i}-${j}`)
-  elCell.innerHTML = htmlCode
-}
 
-function setInfo(info) {
-  const elInfo = document.querySelector(`.info`)
-  elInfo.classList.remove('hide')
-  elInfo.textContent = info
-  setTimeout(() => {
-    elInfo.classList.add('hide')
-  }, 2000)
-}
-
-function setScore() {
-  if (gLevel.level === 'Begginer') {
-    if (gBestScore.begginer < gLevel.score) {
-      gBestScore.begginer = gLevel.score
-      const elScore = document.querySelector(`.begginer-score`)
-      elScore.textContent = 'Begginer: ' + gLevel.score
-    }
-  } else if (gLevel.level === 'Medium') {
-    if (gBestScore.medium < gLevel.score) {
-      gBestScore.medium = gLevel.score
-      const elScore = document.querySelector(`.medium-score`)
-      elScore.textContent = 'Medium: ' + gLevel.score
-    }
-  } else if (gLevel.level === 'Expert') {
-    if (gBestScore.expert < gLevel.score) {
-      gBestScore.expert = gLevel.score
-      const elScore = document.querySelector(`.expert-score`)
-      elScore.textContent = 'Expert: ' + gLevel.score
-    }
-  } else {
-    if (gBestScore.expert < gLevel.score) {
-      gBestScore.expert = gLevel.score
-      const elScore = document.querySelector(`.manual-score`)
-      elScore.textContent = 'Manual mode: ' + gLevel.score
-    }
-  }
-  gBestScore
-}
+// Undoes the previous step
 function undoStep() {
   if (gGame.isOn) {
     if (gPreSteps.preGame.length === 0) setInfo('Sorry, you cant to undo mroe ♻️')
@@ -393,18 +237,14 @@ function undoStep() {
       gGame.timeStart = timeStart
       gBoard = gPreSteps.preBoard.pop()
       renderBoard(gBoard)
-      setFlagsLeft()
-      setLifeLeft()
-      setHintsLeft()
-      setSafeLeft()
-      setPreviousMode()
-      setMineExtermintorBtn()
-      setMegaHintBtn()
+      renderGameButtons()
     }
   }
 }
 
+// Shows a safe cell on the board
 function showSafeCell() {
+  console.log('aaaa')
   if (gGame.isOn && gGame.countSafe > 0) {
     var cells = []
     for (var i = 0; i < gBoard.length; i++) {
@@ -424,6 +264,7 @@ function showSafeCell() {
   }
 }
 
+// Uses a mine exterminator to remove mines from the board
 function mineExterminator() {
   if (gGame.isOn) {
     if (gGame.countExterminator > 0) {
@@ -439,6 +280,7 @@ function mineExterminator() {
         gLevel.MINES--
       }
 
+      // Recalculates neighboring mine counts and updates the board
       setMinesNegsCount(gBoard)
       renderBoard(gBoard)
       setFlagsLeft()
@@ -448,6 +290,8 @@ function mineExterminator() {
     }
   }
 }
+
+// Activates or deactivates the Mega Hint mode
 function useMegaHint(startPos = null, endPos = null) {
   if (gGame.isOn) {
     if (!gMegaHint.isOn && gMegaHint.countMegaHint > 0 && startPos === null) {

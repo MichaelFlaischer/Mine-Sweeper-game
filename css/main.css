@@ -1,17 +1,32 @@
+:root {
+  --background-color: black;
+  --text-color: white;
+  --main-bg-color: rgb(49, 47, 47);
+  --cell-bg-color: gray;
+  --cell-border-color: white;
+  --highlighted-bg-color: rgba(23, 236, 112, 0.1);
+  --highlighted-text-color: lightgray;
+  --bomb-bg-color: red;
+  --info-bg-color: gray;
+  --info-border-color: white;
+  --smile-bg-color: green;
+  --manual-bg-color: rgb(12, 158, 243);
+}
+
 body {
-  background-color: black;
-  color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
   text-align: center;
   padding: 20px;
 }
 
 .board-container {
   border-radius: 10px;
-  background-color: rgb(49, 47, 47);
+  background-color: var(--main-bg-color);
   margin: auto;
+  max-width: 80%;
   display: flex;
   flex-direction: column;
-  max-width: 80%;
   justify-content: center;
   align-items: center;
 }
@@ -19,28 +34,21 @@ body {
 table {
   width: 100%;
   margin: auto;
-  padding: 0px 0px 20px 0px;
+  padding: 0;
 }
 
 td {
   padding: 8px;
   font-size: 14px;
 }
+
 .cell {
-  background-color: gray;
-  border: 2px solid white;
+  background-color: var(--cell-bg-color);
+  border: 2px solid var(--cell-border-color);
   border-radius: 10px;
   width: 20px;
   height: 20px;
   text-align: center;
-}
-
-.levelGame {
-  font-weight: bold;
-}
-
-.board {
-  margin: auto;
 }
 
 .level-list {
@@ -57,17 +65,17 @@ div {
 
 div:hover,
 .cell:hover {
-  background-color: rgba(23, 236, 112, 0.1);
+  background-color: var(--highlighted-bg-color);
 }
 
 .shown {
-  background-color: lightgray;
+  background-color: var(--highlighted-text-color);
   color: black;
   font-weight: bold;
 }
 
 .bomb {
-  background-color: red;
+  background-color: var(--bomb-bg-color);
 }
 
 .level-selected {
@@ -78,13 +86,12 @@ div:hover,
 .hide {
   display: none;
 }
-.info {
-  background-color: gray;
 
-  height: 3em;
-  width: 200px;
-  border: 2px solid white;
-  border-radius: 10px;
+.info,
+.scores-table {
+  background-color: var(--info-bg-color);
+  border: 2px solid var(--info-border-color);
+  border-radius: 30px;
   padding: 10px;
   justify-content: center;
   align-items: center;
@@ -93,17 +100,13 @@ div:hover,
   left: 50%;
   transform: translate(-50%, -50%);
   transition: font-weight 1s ease-out;
-}
-.manual {
-  background-color: rgb(12, 158, 243);
-}
-.green {
-  background-color: green;
-}
-.blue {
-  background-color: blue;
+  text-align: center;
 }
 
-.smile {
-  font-size: 50px;
+.manual {
+  background-color: var(--manual-bg-color);
+}
+
+.green {
+  background-color: green;
 }
