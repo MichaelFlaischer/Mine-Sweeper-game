@@ -26,6 +26,8 @@ function onInit() {
 
 // Starts a new game at the specified position
 function startGame(i, j) {
+  var gBackGroundAudio = new Audio('sound/click.mp3')
+  gBackGroundAudio.play()
   // Resets Mega Hint and previous steps
   gMegaHint = { isOn: false, startPoint: { i: null, j: null }, countMegaHint: 1 }
   gPreSteps = { preBoard: [], preGame: [] }
@@ -44,10 +46,6 @@ function startGame(i, j) {
   // Starts the timer
   gIntervalTime = setInterval(setTimeLeft, 1000)
   renderGameButtons()
-
-  // Saves current state for possible undo action
-  gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
-  gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
 }
 
 // Sets an empty cell at the specified position
@@ -95,6 +93,8 @@ function checkGameOver() {
   const elSmilly = document.querySelector('.smile')
   elSmilly.textContent = '😎'
   gGame.isOn = false
+  var gBackGroundAudio = new Audio('sound/winning.mp3')
+  gBackGroundAudio.play()
   setScore()
 }
 
@@ -122,6 +122,8 @@ function onClicked(i, j) {
 
     // Handles mine click
     if (gBoard[i][j].isMine) {
+      var gBackGroundAudio = new Audio('sound/explosion.mp3')
+      gBackGroundAudio.play()
       gGame.lifeLeft--
       setLifeLeft()
       renderCell(i, j)
@@ -136,6 +138,8 @@ function onClicked(i, j) {
       }
       return
     }
+    var gBackGroundAudio = new Audio('sound/click.mp3')
+    gBackGroundAudio.play()
 
     // Expands the shown area on the board
     expandShown(gBoard, i, j)
@@ -183,7 +187,8 @@ function gameOver() {
   setInfo(`Game Over 🤯 you Scored ` + gLevel.score)
   const elSmilly = document.querySelector('.smile')
   elSmilly.textContent = '🤯'
-
+  var gBackGroundAudio = new Audio('sound/gameOver.mp3')
+  gBackGroundAudio.play()
   // Exposes all mines and stops the game
   exposeMines()
   gGame.isOn = false

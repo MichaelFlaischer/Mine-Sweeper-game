@@ -120,6 +120,8 @@ function renderStartManualBoard(board) {
 
 // Runs the manual game based on user input
 function runManualGame(i, j) {
+  var gBackGroundAudio = new Audio('sound/click.mp3')
+  gBackGroundAudio.play()
   gPreSteps = { preBoard: [], preGame: [] }
   setEmptyCell(i, j)
   setMinesNegsCount(gBoard)
