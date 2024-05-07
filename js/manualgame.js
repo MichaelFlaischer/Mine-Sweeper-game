@@ -8,14 +8,58 @@ function toggleManualMode() {
 
 // Sets the game mode to manual based on user input
 function setManuallyMode() {
-  var size = document.getElementById('boardSizeInput').value
-  toggleManualMode()
-  gLevel = { SIZE: size, MINES: 0, level: 'manual', score: 100000 }
-  gMegaHint = { isOn: false, startPont: { i: null, j: null }, countMegaHint: 1 }
-  gBoard = []
-  buildBoard()
-  renderManualBoard()
-  renderLevelButtens(gLevel.level)
+  var sizeInput = document.getElementById('boardSizeInput').value
+  var livesCountInput = document.getElementById('livesCountInput').value
+  var hintsCountInput = document.getElementById('hintsCountInput').value
+  var safeModeCountInput = document.getElementById('safeModeCountInput').value
+  var mineExterminatorCountInput = document.getElementById('mineExterminatorCountInput').value
+  var megaHintCountInput = document.getElementById('megaHintCountInput').value
+
+  // Check if all inputs are valid numbers
+  if (
+    !isNaN(sizeInput) &&
+    parseInt(sizeInput) > 0 &&
+    !isNaN(livesCountInput) &&
+    parseInt(livesCountInput) >= 0 &&
+    !isNaN(hintsCountInput) &&
+    parseInt(hintsCountInput) >= 0 &&
+    !isNaN(safeModeCountInput) &&
+    parseInt(safeModeCountInput) >= 0 &&
+    !isNaN(mineExterminatorCountInput) &&
+    parseInt(mineExterminatorCountInput) >= 0 &&
+    !isNaN(megaHintCountInput) &&
+    parseInt(megaHintCountInput) >= 0
+  ) {
+    var size = parseInt(sizeInput)
+    var livesCount = parseInt(livesCountInput)
+    var hintsCount = parseInt(hintsCountInput)
+    var safeModeCount = parseInt(safeModeCountInput)
+    var mineExterminatorCount = parseInt(mineExterminatorCountInput)
+    var megaHintCount = parseInt(megaHintCountInput)
+
+    toggleManualMode()
+    gLevel = { SIZE: size, MINES: 0, level: 'manual', score: 100000 }
+    gMegaHint = { isOn: false, startPont: { i: null, j: null }, countMegaHint: megaHintCount }
+    gGame = {
+      isOn: true,
+      shownCount: 0,
+      markedCount: 0,
+      timeStart: new Date(),
+      lifeLeft: livesCount,
+      countHint: hintsCount,
+      isHintOn: false,
+      countSafe: safeModeCount,
+      countExterminator: mineExterminatorCount,
+    }
+
+    gBoard = []
+    buildBoard()
+    renderManualBoard()
+    renderLevelButtens(gLevel.level)
+  } else {
+    // If any of the inputs is not a valid number, trigger another function
+    setInfo('Please enter valid numbers for all settings.')
+  }
 }
 
 // Renders the manual mode board
@@ -77,7 +121,6 @@ function renderStartManualBoard(board) {
 // Runs the manual game based on user input
 function runManualGame(i, j) {
   gPreSteps = { preBoard: [], preGame: [] }
-  gGame = { isOn: true, shownCount: 0, markedCount: 0, timeStart: new Date(), lifeLeft: 3, countHint: 3, isHintOn: false, countSafe: 3, countExterminator: 1 }
   setEmptyCell(i, j)
   setMinesNegsCount(gBoard)
   setEmptyCell(i, j)

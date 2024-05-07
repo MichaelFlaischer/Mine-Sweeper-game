@@ -37,8 +37,20 @@
     <aside class="info hide"></aside>
     <aside class="info manual hide">
       <button class="toggle-window close-button" onclick="toggleManualWindow()">X</button>
-      <input type="text" id="boardSizeInput" placeholder="" />
-      <button onclick="setManuallyMode()">Set board size</button>
+      <br />
+      <a> board n*n</a> <input type="text" id="boardSizeInput" placeholder="" />
+      <br />
+      <a> count lives</a> <input type="text" id="livesCountInput" placeholder="" />
+      <br />
+      <a> count hints</a> <input type="text" id="hintsCountInput" placeholder="" />
+      <br />
+      <a> count safe mode</a> <input type="text" id="safeModeCountInput" placeholder="" />
+      <br />
+      <a> count mine exterminator</a> <input type="text" id="mineExterminatorCountInput" placeholder="" />
+      <br />
+      <a> count mega hint</a> <input type="text" id="megaHintCountInput" placeholder="" />
+      <br />
+      <button onclick="setManuallyMode()">Set board settings</button>
     </aside>
     <table class="board-container">
       <tr>
@@ -64,6 +76,7 @@
         <td class="mega-hint" title="Reveal an area of the board for 2 seconds" onclick="useMegaHint()">🔎</td>
         <td class="game-scores" title="Show the best scores" onclick="toggleScoreWindow()">📜</td>
         <td class="toggle-light" title="Toggle between light and dark mode" onclick="toggleColorMode()">🔦</td>
+        <td class="readme" title="Click for information about the Sweeper Mine Game" onclick="openReadmePopup()">🤔</td>
       </tr>
       <tr>
         <td><tbody class="board"></tbody></td>
