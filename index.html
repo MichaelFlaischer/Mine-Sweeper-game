@@ -55,28 +55,28 @@
     <table class="board-container">
       <tr>
         <td class="level-list">
-          <div class="begginer" onclick="setLevel(4,2,'Begginer')">Begginer</div>
-          <div class="medium" onclick="setLevel(8,14,'Medium')">Medium</div>
-          <div class="smile hide" onclick="resetGame()" title="restart the game">😀</div>
-          <div class="expert" onclick="setLevel(12,32,'Expert')">Expert</div>
-          <div class="manual-mode" onclick="toggleManualMode()">Manual Mode</div>
+          <div class="begginer" onclick="setLevel(4,2,'Begginer')" onmouseover="setTitle(this)">Begginer</div>
+          <div class="medium" onclick="setLevel(8,14,'Medium')" onmouseover="setTitle(this)">Medium</div>
+          <div class="smile hide" onclick="resetGame()" title="restart the game" onmouseover="setTitle(this)">😀</div>
+          <div class="expert" onclick="setLevel(12,32,'Expert')" onmouseover="setTitle(this)">Expert</div>
+          <div class="manual-mode" onclick="toggleManualMode()" onmouseover="setTitle(this)">Manual Mode</div>
         </td>
       </tr>
     </table>
-    <br />
-    <table class="board-container">
+    <h3 class="mouse-title">dd</h3>
+    <table class="board-container game-table">
       <tr>
-        <td class="time" title="Time elapsed since the beginning of the game">🕰️</td>
-        <td class="flags" title="Flags left to use">🚩</td>
-        <td class="life" title="Lives left">💗</td>
-        <td class="hint" onclick="runHint()" title="Use Hint">💡</td>
-        <td class="safe-mode" onclick="showSafeCell()" title="Use Safe Mode">🛡️</td>
-        <td class="mine-exterminator" title="Eliminate 3 existing mines randomly" onclick="mineExterminator()">💣</td>
-        <td class="previous-move" title="Undo previous move" onclick="undoStep()">♻️</td>
-        <td class="mega-hint" title="Reveal an area of the board for 2 seconds" onclick="useMegaHint()">🔎</td>
-        <td class="game-scores" title="Show the best scores" onclick="toggleScoreWindow()">📜</td>
-        <td class="toggle-light" title="Toggle between light and dark mode" onclick="toggleColorMode()">🔦</td>
-        <td class="readme" title="Click for information about the Sweeper Mine Game" onclick="openReadmePopup()">🤔</td>
+        <td class="time" title="Time elapsed since the beginning of the game" onmouseover="setTitle(this)">🕰️</td>
+        <td class="flags" title="Flags left to use" onmouseover="setTitle(this)">🚩</td>
+        <td class="life" title="Lives left" onmouseover="setTitle(this)">💗</td>
+        <td class="hint" onclick="runHint()" title="Use Hint" onmouseover="setTitle(this)">💡</td>
+        <td class="safe-mode" onclick="showSafeCell()" title="Use Safe Mode" onmouseover="setTitle(this)">🛡️</td>
+        <td class="mine-exterminator" title="Eliminate 3 existing mines randomly" onclick="mineExterminator()" onmouseover="setTitle(this)">💣</td>
+        <td class="previous-move" title="Undo previous move" onclick="undoStep()" onmouseover="setTitle(this)">♻️</td>
+        <td class="mega-hint" title="Reveal an area of the board for 2 seconds" onclick="useMegaHint()" onmouseover="setTitle(this)">🔎</td>
+        <td class="game-scores" title="Show the best scores" onclick="toggleScoreWindow()" onmouseover="setTitle(this)">📜</td>
+        <td class="toggle-light" title="Toggle between light and dark mode" onclick="toggleColorMode()" onmouseover="setTitle(this)">🔦</td>
+        <td class="readme" title="Click for information about the Sweeper Mine Game" onclick="openReadmePopup()" onmouseover="setTitle(this)">🤔</td>
       </tr>
       <tr>
         <td><tbody class="board"></tbody></td>

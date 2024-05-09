@@ -108,31 +108,31 @@ function setLifeLeft() {
 // Updates the number of hints left
 function setHintsLeft() {
   const elHint = document.querySelector('.hint')
-  elHint.innerHTML = `<td class="hint" onclick="runHint()" title="hints left">💡 ${gGame.countHint}</td>`
+  elHint.innerHTML = `<td class="hint" onclick="runHint()" title="hints left" onmouseover="setTitle(this)">💡 ${gGame.countHint}</td>`
 }
 
 // Updates the number of safe cells left
 function setSafeLeft() {
   const elHint = document.querySelector('.safe-mode')
-  elHint.innerHTML = `<td class="safe-mode" onclick="showSafeCell()" title="safe mode left">🛡️ ${gGame.countSafe}</td>`
+  elHint.innerHTML = `<td class="safe-mode" onclick="showSafeCell()" title="safe mode left" onmouseover="setTitle(this)">🛡️ ${gGame.countSafe}</td>`
 }
 
 // Updates the button for undoing the previous move
 function setPreviousMode() {
   const elHint = document.querySelector('.previous-move')
-  elHint.innerHTML = `<td class="previous-move" title="Get to previous move" onclick="undoStep()">♻️</td>`
+  elHint.innerHTML = `<td class="previous-move" title="Get to previous move" onclick="undoStep()" onmouseover="setTitle(this)">♻️</td>`
 }
 
 // Updates the button for using the mine exterminator
 function setMineExtermintorBtn() {
   const elExterminator = document.querySelector('.mine-exterminator')
-  elExterminator.innerHTML = `<td class="mine-exterminator" title="Eliminate 3 of existing mines randomly" onclick="mineExterminator()">💣 ${gGame.countExterminator}</td>`
+  elExterminator.innerHTML = `<td class="mine-exterminator" title="Eliminate 3 of existing mines randomly" onclick="mineExterminator()" onmouseover="setTitle(this)">💣 ${gGame.countExterminator}</td>`
 }
 
 // Updates the button for using the mega hint
 function setMegaHintBtn() {
   const elExterminator = document.querySelector('.mega-hint')
-  elExterminator.innerHTML = `<td class="mega-hint" title="Reveal an area of the board for 2 seconds" onclick="useMegaHint()">🔎 ${gMegaHint.countMegaHint}</td>`
+  elExterminator.innerHTML = `<td class="mega-hint" title="Reveal an area of the board for 2 seconds" onclick="useMegaHint()" onmouseover="setTitle(this)">🔎 ${gMegaHint.countMegaHint}</td>`
 }
 
 // Displays an info message temporarily
@@ -247,6 +247,16 @@ function toggleColorMode() {
   gIsDark = !gIsDark
 }
 
+// Function to set the title based on the element hovered over
+function setTitle(element) {
+  var elTitle = document.querySelector('.mouse-title')
+  if (element.title) elTitle.textContent = element.title
+  else elTitle.textContent = element.innerHTML
+  var gBackGroundAudio = new Audio('sound/toggle.mp3')
+  gBackGroundAudio.play()
+}
+
+// Function to open the README popup window
 function openReadmePopup() {
   const readmeText = `
   # Sweeper Mine Game

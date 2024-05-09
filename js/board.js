@@ -36,14 +36,17 @@ function isNegsMines(iPos, jPos) {
 function expandShown(board, iPos, jPos) {
   if (board[iPos][jPos].isShown || board[iPos][jPos].isMarked) return
   board[iPos][jPos].isShown = true
+
+  gGame.shownCount = gGame.shownCount + 1
   if (board[iPos][jPos].minesAroundCount > 0) return
 
   for (var i = iPos - 1; i <= iPos + 1; i++) {
     for (var j = jPos - 1; j <= jPos + 1; j++) {
       if (i >= 0 && i < board.length && j >= 0 && j < board.length && (i - iPos) * (j - jPos) === 0 && (i !== iPos || j !== jPos)) {
         if (board[i][j].minesAroundCount == false) expandShown(board, i, j)
-        else if (board[i][j].minesAroundCount > 0) {
+        else if (board[i][j].minesAroundCount > 0 && !board[i][j].isShown) {
           board[i][j].isShown = true
+          gGame.shownCount = gGame.shownCount + 1
         }
       }
     }

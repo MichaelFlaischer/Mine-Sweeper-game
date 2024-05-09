@@ -58,6 +58,7 @@ function setManuallyMode() {
     renderLevelButtens(gLevel.level)
   } else {
     // If any of the inputs is not a valid number, trigger another function
+    toggleManualMode()
     setInfo('Please enter valid numbers for all settings.')
   }
 }

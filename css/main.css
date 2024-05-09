@@ -29,6 +29,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: fit-content;
 }
 
 table {
@@ -117,4 +118,8 @@ div:hover,
 
 .nice-text {
   font-family: cursive;
+}
+
+.game-table {
+  padding: 40px;
 }

@@ -79,13 +79,7 @@ function resetGame() {
 
 // Checks if the game is over
 function checkGameOver() {
-  for (var i = 0; i < gBoard.length; i++) {
-    for (var j = 0; j < gBoard[0].length; j++) {
-      if ((gBoard[i][j].isMine && gBoard[i][j].isMarked) || (gBoard[i][j].minesAroundCount > -1 && gBoard[i][j].isShown)) {
-      } else return
-    }
-  }
-
+  if (gGame.shownCount !== gBoard.length * gBoard.length - gLevel.MINES) return
   // Stops the timer and calculates the final score
   clearInterval(gIntervalTime)
   gLevel.score = gLevel.score - 100 * calculateTimeElapsedInSeconds(gGame.timeStart)
@@ -93,6 +87,8 @@ function checkGameOver() {
   const elSmilly = document.querySelector('.smile')
   elSmilly.textContent = '😎'
   gGame.isOn = false
+  exposeMines()
+  renderBoard(gBoard)
   var gBackGroundAudio = new Audio('sound/winning.mp3')
   gBackGroundAudio.play()
   setScore()
@@ -128,7 +124,7 @@ function onClicked(i, j) {
       setLifeLeft()
       renderCell(i, j)
       setTimeout(() => {
-        if (gGame.isOn) renderCell(i, j, true)
+        if (gGame.isOn && !gBoard[i][j].isMarked) renderCell(i, j, true)
       }, 1500)
       setInfo(`you hit mine 💥 left with ${gGame.lifeLeft} lives 💗`)
       gLevel.score -= 2000
@@ -249,7 +245,6 @@ function undoStep() {
 
 // Shows a safe cell on the board
 function showSafeCell() {
-  console.log('aaaa')
   if (gGame.isOn && gGame.countSafe > 0) {
     var cells = []
     for (var i = 0; i < gBoard.length; i++) {
