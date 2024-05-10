@@ -104,10 +104,7 @@ function onClicked(i, j) {
 
   // Executes game logic if the game is active
   if (gGame.isOn) {
-    // Saves the current state for possible undo action
-    gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
-    gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
-
+    updatePreMove()
     // Activates Mega Hint mode if enabled
     if (gMegaHint.isOn) {
       if (gMegaHint.startPoint.i === null) {
@@ -115,23 +112,9 @@ function onClicked(i, j) {
       } else useMegaHint(gMegaHint.startPoint, { i: i, j: j })
       return
     }
-
     // Handles mine click
     if (gBoard[i][j].isMine) {
-      var gBackGroundAudio = new Audio('sound/explosion.mp3')
-      gBackGroundAudio.play()
-      gGame.lifeLeft--
-      setLifeLeft()
-      renderCell(i, j)
-      setTimeout(() => {
-        if (gGame.isOn && !gBoard[i][j].isMarked) renderCell(i, j, true)
-      }, 1500)
-      setInfo(`you hit mine 💥 left with ${gGame.lifeLeft} lives 💗`)
-      gLevel.score -= 2000
-      if (gGame.lifeLeft === 0) {
-        gameOver()
-        renderBoard(gBoard)
-      }
+      mineClick(i, j)
       return
     }
     var gBackGroundAudio = new Audio('sound/click.mp3')
@@ -144,6 +127,30 @@ function onClicked(i, j) {
     checkGameOver()
   }
   renderBoard(gBoard)
+}
+
+// Saves the current state for possible undo action
+function updatePreMove() {
+  gPreSteps.preBoard.push(JSON.parse(JSON.stringify(gBoard)))
+  gPreSteps.preGame.push(JSON.parse(JSON.stringify(gGame)))
+}
+
+// Handles mine click
+function mineClick(i, j) {
+  var gBackGroundAudio = new Audio('sound/explosion.mp3')
+  gBackGroundAudio.play()
+  gGame.lifeLeft--
+  setLifeLeft()
+  renderCell(i, j)
+  setTimeout(() => {
+    if (gGame.isOn && !gBoard[i][j].isMarked) renderCell(i, j, true)
+  }, 1500)
+  setInfo(`you hit mine 💥 left with ${gGame.lifeLeft} lives 💗`)
+  gLevel.score -= 2000
+  if (gGame.lifeLeft === 0) {
+    gameOver()
+    renderBoard(gBoard)
+  }
 }
 
 // Handles the cell marking event
