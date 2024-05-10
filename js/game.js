@@ -275,11 +275,12 @@ function mineExterminator() {
         }
       }
       for (var n = 0; n < 3 && gLevel.MINES > 0; n++) {
-        var randCell = mines[getRandomIntInclusive(0, mines.length - 1)]
+        var randInt = getRandomIntInclusive(0, mines.length - 1)
+        var randCell = mines[randInt]
         gBoard[randCell.i][randCell.j] = { minesAroundCount: 0, isShown: false, isMine: false, isMarked: false }
         gLevel.MINES--
+        mines.splice(randInt, 1)
       }
-
       // Recalculates neighboring mine counts and updates the board
       setMinesNegsCount(gBoard)
       renderBoard(gBoard)
